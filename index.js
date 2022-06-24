@@ -37,19 +37,26 @@ const mainPromt = () => {
         .then((answers) => {
             switch (answers.quest) {
                 case 'View All Employees':
+                    return viewAllEmployees();
 
                 case 'Add Employee':
+                    return addEmployee()
 
                 case 'Update Employee':
+                    return updateEmployee()
 
                 case 'View All Roles':
+                    return viewAllRoles()
 
                 case 'Add Role':
+                    return addRole()
 
                 case 'View All Departments':
+                    return viewAllDepartments()
 
                 case 'Add Department':
-
+                    return addDepartment
+                    
                 case 'Quit':
                     art.font("GoodBye", 'doom', (err, rendered)=>{
                         if (err) {
@@ -60,9 +67,6 @@ const mainPromt = () => {
                             console.log('_'.repeat(48) + '\n')
                         }
                     });
-                    
-
-
             }
         })
         .catch((error) => {
@@ -73,3 +77,32 @@ const mainPromt = () => {
             }
         });
 }
+
+function viewAllEmployees(){
+    console.log('what the hell')
+}
+
+function addEmployee(){
+    
+}
+
+function updateEmployee(){
+    
+}
+
+function viewAllRoles(){
+    
+}
+
+function addRole(){
+    
+}
+
+function viewAllDepartments(){
+    
+}
+
+function addDepartment(){
+    
+}
+
