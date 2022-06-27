@@ -1,5 +1,6 @@
 const inquirer = require('inquirer')
 const art = require('ascii-art');
+const db = require('./db/db')
 
 
 art.font("Employee Manager", 'doom', (err, rendered)=>{
@@ -56,7 +57,7 @@ const mainPromt = () => {
 
                 case 'Add Department':
                     return addDepartment
-                    
+
                 case 'Quit':
                     art.font("GoodBye", 'doom', (err, rendered)=>{
                         if (err) {
@@ -73,13 +74,18 @@ const mainPromt = () => {
             if (error.isTtyError) {
             console.log(error)
             } else {
-            // Something else went wrong
+
             }
         });
 }
 
 function viewAllEmployees(){
-    console.log('what the hell')
+    let query = 'SELECT employees.id AS ID, employees.first_name AS FirstName, employees.last_name AS LastName, roles.title AS Job, roles.salary AS Salary, departments.name AS Department FROM employees JOIN roles ON employees.role_id = roles.roles_id JOIN departments ON roles.department_id = departments.id'
+    db.query(query, function (err, res){
+        if(err) throw err;
+        console.table(res);
+        mainPromt()
+    })
 }
 
 function addEmployee(){
@@ -91,18 +97,23 @@ function updateEmployee(){
 }
 
 function viewAllRoles(){
-    
-}
+    let query = "SELECT roles.title AS Title, roles.salary AS Salary FROM roles;";
+    db.query(query, function (err, res){
+        if (err) throw err;
+        console.table(res);
+        mainPromt();
+    });
+};
 
 function addRole(){
     
-}
+};
 
 function viewAllDepartments(){
     
-}
+};
 
 function addDepartment(){
     
-}
+};
 
