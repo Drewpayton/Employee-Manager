@@ -101,8 +101,6 @@ function viewAllEmployees(){
             newjob.push(jobarr[i].title)
         }
 
-        console.log(newjob)
-
      inquirer
         .prompt([
           {
@@ -144,7 +142,81 @@ function viewAllEmployees(){
   }
 
 function updateEmployee(){
-    
+    let roleArr = [];
+    let updEmploy = [];
+
+    let query1 = `SELECT roles.title FROM roles`
+
+    db.query(query1, (err, res) => {
+        if (err) throw err
+
+        for (i = 0; i < res.length; i++) {
+            roleArr.push(res[i].title)
+        }
+
+        let query2 = "SELECT employees.first_name, employees.last_name, roles.title, departments.name";
+        query2 += " FROM employees INNER JOIN roles ON (employees.role_id = roles.id) INNER JOIN departments ON (roles.department_id = departments.id)"
+        query2 += " ORDER BY employees.first_name"
+
+    db.query(query2, (err, res) => {
+        if (err) throw err;
+        
+        for (i = 0; i < res.length; i++) {
+            updEmploy.push(res[i].first_name)
+        }
+        
+       
+        inquirer
+            .prompt([
+                {
+                    name: 'updName',
+                    type: 'list',
+                    message: "Who's role do you want to change?",
+                    choices: updEmploy
+                },
+                {
+                    name: 'newRole',
+                    type: 'list',
+                    message: 'Choose the new role for the Employee',
+                    choices: roleArr
+                }
+            ])
+            .then(response => {
+                let updatedRole = response.newRole;
+                let updatedRoleId = roleArr.indexOf(updatedRole);
+                updatedRoleId++;
+
+                var query = "UPDATE employees SET ? WHERE ?";
+            db.query(query,[
+                {
+                    role_id: updatedRoleId
+                },
+                {
+                    first_name: response.updName
+                }
+            ],function (err, res){
+                if (err) throw err;
+                console.log("\n Role Successfully Changed!! \n")
+                mainPromt();
+            })         
+
+
+
+
+            })
+   
+   
+   
+   
+   
+    })
+
+
+
+
+
+   
+    });
 }
 
 function viewAllRoles(){
@@ -157,12 +229,20 @@ function viewAllRoles(){
 };
 
 function addRole(){
-    let query1 = `SELECT * FROM departments`
+    jobarr = [];
+    newjob = [];
+    let query1 = `SELECT departments.name, departments.id FROM departments`
 
     db.query(query1, (err, res) => {
+    if (err) throw err;
 
-   
+    jobarr = res;
 
+    
+        
+        for (i = 0; i < jobarr.length; i++) {
+            newjob.push(jobarr[i].name)
+        }
 
     inquirer
         .prompt([
@@ -179,9 +259,27 @@ function addRole(){
             {
                 name: 'Depart',
                 type: 'list',
-                choices: res
+                choices: newjob
             }
         ])
+        .then(response => {
+            let addDepart = response.Depart;
+            let addDepartId = newjob.indexOf((addDepart));
+            addDepartId++;
+           
+
+
+            let query3 = `INSERT INTO roles (title, salary, department_id) VALUES ('${response.title}', '${response.salary}', '${addDepartId}')`
+            
+            db.query(query3, (err, res) => {
+                if (err) throw err;
+                console.log(`\n The employee has been added to the DB \n`)
+                mainPromt();
+            });
+
+
+
+        })
     })
 }
 
